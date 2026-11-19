@@ -1,26 +1,63 @@
 #include <time.h>
 #include <stdio.h>
+#include <math.h>
 
 #define NEURNET_IMPLEMENTATION
 #include "neurnet.h"
 
+typedef struct{
+    
+    Mat a0;
 
+    Mat w1;
+    Mat b1;
+    Mat a1;
+
+    Mat w2;
+    Mat b2;
+    Mat a2;
+} Xor;
+
+float forward_xor(Xor m, float x1, float x2){
+    MAT_AT(m.a0, 0, 0) = x1;
+    MAT_AT(m.a0, 0, 1) = x2;
+    
+    mat_dot(m.a1, m.a0, m.w1);
+    mat_sum(m.a1, m.a1, m.b1);
+    mat_sig(m.a1);
+
+    mat_dot(m.a2, m.a1, m.w2);
+    mat_sum(m.a2, m.a2, m.b2);
+    mat_sig(m.a2);
+    
+    return *m.a2.es;
+}
 int main(void) {
 
     srand(time(0));
-    Mat a = mat_alloc(2, 3);
-    Mat b = mat_alloc(3, 1);
-    Mat dest = mat_alloc(2, 1);
 
-    mat_fill(a, 2);
-    mat_fill(b, 7);
+    Xor m;
 
-    mat_print(a);
-    printf("-----------------\n");
-    mat_print(b);
-    printf("-----------------\n");
-    mat_dot(dest, a, b);
-    mat_print(dest);
+    m.a0 = mat_alloc(1, 2);
+    m.w1 = mat_alloc(2, 2);
+    m.b1 = mat_alloc(1, 2);
 
+    m.a1 = mat_alloc(1, 2);
+
+    m.w2 = mat_alloc(2, 1);
+    m.b2 = mat_alloc(1, 1);
+    m.a2 = mat_alloc(1, 1);
+    
+    mat_rand(m.w1, 0, 1);
+    mat_rand(m.b1, 0, 1);
+    mat_rand(m.w2, 0, 1);
+    mat_rand(m.b2, 0, 1);
+
+    for (size_t i = 0; i < 2; i++){
+	for (size_t j = 0; j < 2; j++){
+	    printf("%zu ^ %zu = %f\n", i, j, forward_xor(m, i, j));
+	}
+    }
+    
     return 0;
 }

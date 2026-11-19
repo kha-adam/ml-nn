@@ -5,6 +5,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <math.h>
 
 #ifndef NEURNET_MALLOC
 #include <stdlib.h>
@@ -15,6 +16,7 @@
 #include <assert.h>
 #define NEURNET_ASSERT assert
 #endif // NEURNET_ASSERT
+
 typedef struct {
     size_t rows;
     size_t cols;
@@ -24,12 +26,14 @@ typedef struct {
 #define MAT_AT(m, i, j) (m).es[(i)*(m).cols + (j)]
 
 float rand_float(void);
+float sigmoidf(float x);
 
 void mat_fill(Mat a, float num);
 Mat mat_alloc(size_t rows, size_t cols);
 void mat_rand(Mat m, float low, float high);
 void mat_dot(Mat dest, Mat a, Mat b);
 void mat_sum(Mat dest, Mat a, Mat b);
+void mat_sig(Mat a);
 void mat_print(Mat m);
 
 #endif // NEURNET_H_
@@ -38,6 +42,11 @@ void mat_print(Mat m);
 
 float rand_float(void){
     return (float) rand() / (float) RAND_MAX;
+}
+
+float sigmoidf(float x)
+{
+    return 1.f / (1.f + expf(-x));
 }
 
 void mat_fill(Mat a, float num){
@@ -77,13 +86,23 @@ void mat_sum(Mat dest, Mat a, Mat b){
 	}
     }
 }
+void mat_sig(Mat a)
+{
+    for (size_t i = 0; i < a.rows; i++){
+	for(size_t j = 0; j < a.cols; j++){
+	    MAT_AT(a, i, j) = sigmoidf(MAT_AT(a, i, j));
+	}
+    }
+}
 void mat_print(Mat m){
+    printf("[\n");
     for (size_t i = 0; i < m.rows; i++){
 	for (size_t j = 0; j < m.cols; j++){
-	    printf("%f ", MAT_AT(m, i, j));
+	    printf("	%f ", MAT_AT(m, i, j));
 	}
 	printf("\n");
     }
+    printf("]\n");
 }
 void mat_rand(Mat m, float low, float high)
 {
