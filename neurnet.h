@@ -1,4 +1,4 @@
-#define NEURNET_IMPLEMENTATION
+// #define NEURNET_IMPLEMENTATION
 
 #ifndef NEURNET_H_
 #define NEURNET_H_
