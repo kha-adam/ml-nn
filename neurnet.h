@@ -1,4 +1,4 @@
-// #define NEURNET_IMPLEMENTATION
+#define NEURNET_IMPLEMENTATION
 
 #ifndef NEURNET_H_
 #define NEURNET_H_
@@ -20,10 +20,11 @@
 typedef struct {
     size_t rows;
     size_t cols;
+    size_t stride;
     float *es;
 } Mat;
 
-#define MAT_AT(m, i, j) (m).es[(i)*(m).cols + (j)]
+#define MAT_AT(m, i, j) (m).es[(i)*(m).stride + (j)]
 
 float rand_float(void);
 float sigmoidf(float x);
@@ -31,6 +32,9 @@ float sigmoidf(float x);
 void mat_fill(Mat a, float num);
 Mat mat_alloc(size_t rows, size_t cols);
 void mat_rand(Mat m, float low, float high);
+Mat mat_row(Mat m, size_t row);
+Mat mat_col(Mat m, size_t col);
+void mat_copy(Mat dest, Mat src);
 void mat_dot(Mat dest, Mat a, Mat b);
 void mat_sum(Mat dest, Mat a, Mat b);
 void mat_sig(Mat a);
@@ -61,6 +65,7 @@ Mat mat_alloc(size_t rows, size_t cols){
     Mat m;
     m.rows = rows;
     m.cols = cols;
+    m.stride = m.cols;
     m.es = NEURNET_MALLOC(sizeof(*m.es)*rows*cols);
     NEURNET_ASSERT(m.es != NULL);
     return m;
@@ -74,6 +79,23 @@ void mat_dot(Mat dest, Mat a, Mat b){
 	    for (size_t k = 0; k < a.cols; k++){
 		MAT_AT(dest, i, j) += MAT_AT(a, i, k) * MAT_AT(b, k, j);
 	    }
+	}
+    }
+}
+Mat mat_row(Mat m, size_t row){
+    return (Mat) {
+	.rows = 1,
+	.cols = m.cols,
+	.stride = m.stride,
+	.es = &MAT_AT(m, row, 0),
+    };
+}
+void mat_copy(Mat dest, Mat src){
+    NEURNET_ASSERT(dest.rows == src.rows);
+    NEURNET_ASSERT(dest.cols == src.cols);
+    for (size_t i = 0; i < dest.rows; i++){
+	for(size_t j = 0; j < dest.cols; j++){
+	    MAT_AT(dest, i, j) = MAT_AT(src, i, j);
 	}
     }
 }
