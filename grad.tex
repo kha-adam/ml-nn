@@ -1,0 +1,41 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+
+\begin{document}
+\section{Gradient Descent}
+
+\begin{align}
+    C'(w) = \lim{\epsilon \to 0}\frac{C(w + \epsilon) - C(w)}{\epsilon}
+\end{align}
+
+\subsection{``Twice''}
+\begin{align}
+	C(w) &= \fract{1}{n}\sum{i=1}{n}($x_i$.w - $y_i$)**2 \\
+	C'(w) &= \left(\fract{1}{n}\sum{i=1}{n}($x_i$.w - $y_i$)**2\right)' \\
+	C'(w) &= \left(\fract{1}{n}\sum{i=1}{n}2$x_i$.w($x_i$.w - $y_i$)\right)' \\
+\end{align}
+\subsection{One Neuron Model}
+
+\begin{align}
+    y &= \sigma(x.w+b)
+    \sigma(x) &= \frac{1}{1+\exp{-x}
+    \sigma'(x) &= \sigma(x)(1-\sigma(x))
+
+\end{align}
+\subsubsection{Cost}
+\def\pd[#1]{\partial_{#1}}
+\def\avgsum[#1, #2]\frac{1}{#2}\sum{#1=1}{#2}
+\begin{align}
+    $a_i$ &= \sigma($x_i$.w+b - b)
+    \pd[w]$a_i$ &= $a_i$(1 - $a_i$)$x_i$
+    C &= \avgsum[#1, #2]($a_i$ - $y_i$)
+    \pd[w] C &= \avgsum[#1, #2]\pd[w]\left($a_i$ - $y_i$\right)**2
+    \pd[w] C &= \avgsum[#1, #2]\pd[w]\left($a_i$ - $y_i$\right)**2
+    \pd[w] C &= \avgsum[#1, #2]2($a_i$ - $y_i$)\pd[w]\left($a_i$ - $y_i$\right)
+    \pd[w] C &= \avgsum[#1, #2]2($a_i$ - $y_i$)\pd[w]($a_i$ - $y_i$)$a_i$(1-$a_i$)$x_i$
+    \pd[b] C &= \avgsum[#1, #2]2($a_i$ - $y_i$)\pd[w]($a_i$ - $y_i$)$a_i$(1-$a_i$)
+
+
+\end{align}
+\end{document}
